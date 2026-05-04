@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
-import { getSession } from "../../../../lib/session";
-import { createTask, getTasksBySprintId, getPendingTasks } from "../../../../lib/tasks";
-import { getSprintById } from "../../../../lib/sprints";
-import { createNotification } from "../../../../lib/notifications";
-import { sendTaskPendingEmail } from "../../../../lib/email";
-import { users } from "../../../../lib/users";
+import { getSession } from "../../../lib/session";
+import {
+  createTask,
+  getTasksBySprintId,
+  getPendingTasks,
+} from "../../../lib/tasks";
+import { getSprintById } from "../../../lib/sprints";
+import { createNotification } from "../../../lib/notifications";
+import { sendTaskPendingEmail } from "../../../lib/email";
+import { users } from "../../../lib/users";
 
 export async function GET(req: Request) {
   const session = await getSession();
@@ -24,7 +28,10 @@ export async function GET(req: Request) {
     if (sprintId) {
       return NextResponse.json(getTasksBySprintId(sprintId));
     }
-    return NextResponse.json({ error: "Provide sprintId or pending=true" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Provide sprintId or pending=true" },
+      { status: 400 },
+    );
   }
 
   // Members see only their own tasks
@@ -47,12 +54,18 @@ export async function POST(req: Request) {
   const { sprintId, title, description, points, editOf } = body || {};
 
   if (!sprintId || !title) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 },
+    );
   }
 
   const sprint = getSprintById(sprintId);
   if (!sprint || sprint.status !== "active") {
-    return NextResponse.json({ error: "Sprint not found or inactive" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Sprint not found or inactive" },
+      { status: 404 },
+    );
   }
 
   const task = createTask(
@@ -61,7 +74,7 @@ export async function POST(req: Request) {
     title,
     description || "",
     Number(points) || 1,
-    editOf
+    editOf,
   );
 
   const isEdit = Boolean(editOf);
@@ -74,7 +87,7 @@ export async function POST(req: Request) {
       isEdit ? "task_edit_pending" : "task_pending",
       `${session.name} submitted ${isEdit ? "an edit to" : "a new task"}: "${title}"`,
       task.id,
-      sprintId
+      sprintId,
     );
 
     try {
@@ -84,10 +97,13 @@ export async function POST(req: Request) {
         session.name,
         title,
         Number(points) || 1,
-        isEdit
+        isEdit,
       );
     } catch (err) {
-      console.error(`Failed to send task pending email to ${admin.email}:`, err);
+      console.error(
+        `Failed to send task pending email to ${admin.email}:`,
+        err,
+      );
     }
   }
 

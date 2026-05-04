@@ -11,14 +11,14 @@ export async function POST(req: Request) {
     if (!email || !password) {
       return NextResponse.json(
         { error: "Missing email or password" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (findUserByEmail(email)) {
       return NextResponse.json(
         { error: "User already exists" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
     const response = NextResponse.json(
       { id: user.id, name: user.name, email: user.email, role: user.role },
-      { status: 201 }
+      { status: 201 },
     );
 
     response.cookies.set("session", token, {

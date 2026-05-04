@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { getSession } from "../../../../../../lib/session";
-import { declineTask, getTaskById } from "../../../../../../lib/tasks";
-import { createNotification } from "../../../../../../lib/notifications";
-import { sendTaskDeclinedEmail } from "../../../../../../lib/email";
-import { users } from "../../../../../../lib/users";
+import { getSession } from "../../../../../lib/session";
+import { declineTask, getTaskById } from "../../../../../lib/tasks";
+import { createNotification } from "../../../../../lib/notifications";
+import { sendTaskDeclinedEmail } from "../../../../../lib/email";
+import { users } from "../../../../../lib/users";
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -21,7 +21,7 @@ export async function POST(
   if (!reason || reason.trim() === "") {
     return NextResponse.json(
       { error: "A decline reason is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -33,7 +33,7 @@ export async function POST(
   if (task.approvalStatus !== "pending") {
     return NextResponse.json(
       { error: "Task is not pending approval" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -47,7 +47,7 @@ export async function POST(
       "task_declined",
       `Your task "${task.title}" was declined: ${reason}`,
       id,
-      task.sprintId
+      task.sprintId,
     );
 
     try {
@@ -55,7 +55,7 @@ export async function POST(
         member.email,
         member.name,
         task.title,
-        reason
+        reason,
       );
     } catch (err) {
       console.error(`Failed to send decline email to ${member.email}:`, err);

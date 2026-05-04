@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { getSession } from "../../../../../../lib/session";
-import { approveTask, getTaskById } from "../../../../../../lib/tasks";
-import { createNotification } from "../../../../../../lib/notifications";
-import { sendTaskApprovedEmail } from "../../../../../../lib/email";
-import { findUserByEmail, users } from "../../../../../../lib/users";
+import { getSession } from "../../../../../lib/session";
+import { approveTask, getTaskById } from "../../../../../lib/tasks";
+import { createNotification } from "../../../../../lib/notifications";
+import { sendTaskApprovedEmail } from "../../../../../lib/email";
+import { findUserByEmail, users } from "../../../../../lib/users";
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -23,7 +23,7 @@ export async function POST(
   if (task.approvalStatus !== "pending") {
     return NextResponse.json(
       { error: "Task is not pending approval" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -37,7 +37,7 @@ export async function POST(
       "task_approved",
       `Your task "${task.title}" has been approved`,
       approved?.id,
-      task.sprintId
+      task.sprintId,
     );
 
     try {

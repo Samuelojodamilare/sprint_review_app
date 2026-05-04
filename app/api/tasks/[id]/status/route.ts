@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { getSession } from "../../../../../../lib/session";
-import { updateWorkStatus, getTaskById } from "../../../../../../lib/tasks";
-import type { WorkStatus } from "../../../../../../lib/tasks";
+import { getSession } from "../../../../../lib/session";
+import { updateWorkStatus, getTaskById } from "../../../../../lib/tasks";
+import type { WorkStatus } from "../../../../../lib/tasks";
 
 const VALID_STATUSES: WorkStatus[] = ["todo", "in_progress", "done", "blocked"];
 
 export async function PATCH(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getSession();
   if (!session) {
@@ -35,7 +35,7 @@ export async function PATCH(
   if (task.approvalStatus !== "approved") {
     return NextResponse.json(
       { error: "Only approved tasks can have their status updated" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
