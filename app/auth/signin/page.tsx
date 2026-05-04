@@ -14,6 +14,7 @@ const SignIn = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -21,13 +22,19 @@ const SignIn = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      if (res.ok) {
-        router.push("/dashboard/user");
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data?.error || "Login failed");
         return;
       }
 
-      const data = await res.json();
-      setError(data?.error || "Login failed");
+      // Route based on the role returned from the server
+      if (data.role === "admin") {
+        router.push("/dashboard/admin");
+      } else {
+        router.push("/dashboard/user");
+      }
     } catch (err) {
       setError("Login failed");
     } finally {

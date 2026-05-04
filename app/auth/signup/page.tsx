@@ -15,6 +15,7 @@ const SignUp = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
@@ -22,13 +23,19 @@ const SignUp = () => {
         body: JSON.stringify({ name, email, password }),
       });
 
-      if (res.ok) {
-        router.push("/dashboard/user");
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data?.error || "Registration failed");
         return;
       }
 
-      const data = await res.json();
-      setError(data?.error || "Registration failed");
+      // Route based on role assigned by the server
+      if (data.role === "admin") {
+        router.push("/dashboard/admin");
+      } else {
+        router.push("/dashboard/user");
+      }
     } catch (err) {
       setError("Registration failed");
     } finally {
