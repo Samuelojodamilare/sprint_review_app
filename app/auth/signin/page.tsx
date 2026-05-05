@@ -35,8 +35,9 @@ const SignIn = () => {
       } else {
         router.push("/dashboard/user");
       }
-    } catch (err) {
-      setError("Login failed");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Login failed";
+      setError(message);
     } finally {
       setLoading(false);
     }

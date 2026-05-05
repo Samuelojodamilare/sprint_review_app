@@ -36,8 +36,10 @@ const SignUp = () => {
       } else {
         router.push("/dashboard/user");
       }
-    } catch (err) {
-      setError("Registration failed");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Registration failed";
+      setError(message);
     } finally {
       setLoading(false);
     }

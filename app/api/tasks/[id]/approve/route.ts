@@ -3,7 +3,7 @@ import { getSession } from "../../../../../lib/session";
 import { approveTask, getTaskById } from "../../../../../lib/tasks";
 import { createNotification } from "../../../../../lib/notifications";
 import { sendTaskApprovedEmail } from "../../../../../lib/email";
-import { findUserByEmail, users } from "../../../../../lib/users";
+import { users } from "../../../../../lib/users";
 
 export async function POST(
   req: Request,
